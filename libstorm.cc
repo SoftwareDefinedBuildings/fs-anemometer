@@ -150,10 +150,6 @@ namespace storm
   {
     void irq_callback(uint32_t idx)
     {
-      tq::add([=]
-      {
-        printf("got IRQ callback %d\n", idx);
-      });
       if (idx <= 20 && gpio::irq_ptrs[idx])
       {
         tq::add(gpio::irq_ptrs[idx]);

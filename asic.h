@@ -171,7 +171,6 @@ public:
   void _r_reg(uint8_t regaddr, uint8_t sz, std::function<void(int, buf_t)> ondone)
   {
     auto buf = mkbuf({regaddr});
-    printf("r_reg addr1 %d %d\n", this, this->addr);
     i2c::write(i2c::external(this->addr), i2c::START, buf, 1, [this,ondone,sz](int status, buf_t buf)
     {
       if (status != 0)
@@ -179,7 +178,6 @@ public:
         printf("WRN: _r_reg i2c stat1 nonzero\n");
       }
       auto rvbuf = mkbuf(sz);
-      printf("r_reg addr2 %d %d\n", this, this->addr);
       i2c::read(i2c::external(this->addr), i2c::RSTART | i2c::STOP, rvbuf, sz, [this,ondone](int status, buf_t rv)
       {
         if (status != 0)

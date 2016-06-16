@@ -63,8 +63,8 @@ void get_tof(buf_t p, uint32_t calres)
   }
   //Now we know the max, find the first index to be greater than half max
   uint64_t quarter = magmax >> 2;
-  int ei;
-  int si;
+  int ei = 0;
+  int si = 0;
   for (int i = 0; i < 16; i++)
   {
     if (magsqr[i] < quarter)
