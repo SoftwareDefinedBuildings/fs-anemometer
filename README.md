@@ -5,6 +5,9 @@ The firestorm shield anemometer. This requires the latest firestorm kernel. You 
 The easiest way to compile and program this is to use our docker image:
 
 ```
+#some ubuntu versions will require this to let container access USB
+sudo service apparmor stop
+
 docker pull r.cal-sdb.org/fsa
 docker run --privileged -it r.cal-sdb.org/fsa
 # you will drop into a byobu shell
