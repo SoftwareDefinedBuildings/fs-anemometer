@@ -35,9 +35,13 @@ void do_sample(ChirpASIC *tx, ChirpASIC *rx, std::function<void(buf_t)> ondone)
         });
       });
       tx->gang_irq_active();
+      volatile int i;
+      for (i = 0; i < 100; i++);
       tx->gang_irq_idle();
-      rx->irq_input();
-      tx->irq_input();
+
+
+      //rx->irq_input();
+      //tx->irq_input();
     });
   });
 }
@@ -128,8 +132,14 @@ void calibrate(std::function<void()> ondone)
             {
               BCAL = result;
               CAL_PULSELEN = 160; //TODO switch to accurate pulse length
-              printf("both calibrate's finished: A=%d B=%d\n", ACAL, BCAL);
-              tq::add(ondone);
+              asicA.set_maxrange(0x10, [=]
+              {
+                asicB.set_maxrange(0x10, [=]
+                {
+                  printf("both calibrate's finished: A=%d B=%d\n", ACAL, BCAL);
+                  tq::add(ondone);
+                });
+              });
             });
           });
         });

@@ -55,7 +55,7 @@ public:
     gpio::set(rst, 0);
     gpio::set_mode(prog, gpio::OUT);
     gpio::set(prog, 0);
-    gpio::set_mode(irq, gpio::IN);
+    gpio::set_mode(irq, gpio::OUT);
     gpio::set(irq, 0);
   //  gpio::set_pull(irq, gpio::DOWN);
   }
@@ -107,6 +107,9 @@ public:
       (*buf)[i] = wind_v8_rawbin[ptr + i];
     }
     auto flag = (ptr+256 > 2048) ? i2c::STOP : i2c::NONE;
+    if (ptr == 0) {
+      flag = i2c::RSTART;
+    }
     i2c::write(i2c::external(DEF_ADDR), flag, buf, 128, [=](int status, buf_t buf)
     {
       printf("complete s=%d\n", status);
@@ -178,6 +181,10 @@ public:
         printf("WRN: _r_reg i2c stat1 nonzero\n");
       }
       auto rvbuf = mkbuf(sz);
+      for (int i = 0; i < sz; i++)
+      {
+        (*rvbuf)[i] = 0x55;
+      }
       i2c::read(i2c::external(this->addr), i2c::RSTART | i2c::STOP, rvbuf, sz, [this,ondone](int status, buf_t rv)
       {
         if (status != 0)
